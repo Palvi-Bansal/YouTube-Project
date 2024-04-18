@@ -34,7 +34,7 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
         builder: (context, value, child) {
           if (userCredential.value == '' || userCredential.value == null) {
             return const Center(
-              child: CircularProgressIndicator(), // Show loading indicator
+              child: CircularProgressIndicator(),
             );
           } else {
             return Center(
