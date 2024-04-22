@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:youtube/Screens/Authentication/sign_in_screen.dart';
+import 'package:youtube/Screens/home_screen.dart';
 import 'package:youtube/Services/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:youtube/upload_file.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({super.key});
@@ -36,7 +37,7 @@ class _PostScreenState extends State<PostScreen> {
             auth.signOut().then((value) {
               Navigator.push(context,
                   MaterialPageRoute(
-                      builder: (context) => const SignIn()));
+                      builder: (context) => const HomeScreen()));
             }).onError((error, stackTrace) {
               Utils().toastMessage(error.toString());
             });
@@ -56,11 +57,24 @@ class _PostScreenState extends State<PostScreen> {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 leading: buildImage(index),
                 title: Text(
-                  'Live Post ${index + 1}',
+                  'Live Post'
+                      ' ${index + 1}',
                   style: const TextStyle(color: Colors.black),
                 ),
               ),
             ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(context,
+              MaterialPageRoute(
+                  builder: (context)=> const UploadFileScreen()));
+        },
+        backgroundColor: Colors.red,
+        child: const Icon(
+            Icons.upload_outlined,
+            color: Colors.white,
+        ),
       ),
     );
   }
