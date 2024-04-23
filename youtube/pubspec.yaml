@@ -47,8 +47,7 @@ dependencies:
   path_provider:
   dio:
   open_file:
-
-
+  gallery_saver: ^2.3.2
   #cache image
   cached_network_image: ^3.0.0
 

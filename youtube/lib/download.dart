@@ -1,10 +1,11 @@
-import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:youtube/Services/utility.dart';
 import 'package:youtube/upload_file.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 class DownloadFileScreen extends StatefulWidget {
   const DownloadFileScreen({super.key});
@@ -99,12 +100,27 @@ class _DownloadFileScreenState extends State<DownloadFileScreen> {
     );
   }
   Future downloadFile(int index, Reference ref) async{
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/${ref.name}');
-    await ref.writeToFile(file);
+    final url = await ref.getDownloadURL();
+    final tempDir = await getTemporaryDirectory();
+    final path = '${tempDir.path}/${ref.name}';
+    await Dio().download(
+        url,
+        path,
+        onReceiveProgress: (received, total){
+          double progress = received/total;
 
+          setState(() {
+            downloadProgress[index] = progress;
+          });
+        });
+    if(url.contains('.mp4')){
+      await GallerySaver.saveVideo(path, toDcim: true);
+    }
+    else if(url.contains('.jpg')){
+      await GallerySaver.saveImage(path, toDcim: true);
+    }
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Downloaded ${ref.name}')),
+      SnackBar(content: Text('Download ${ref.name}')),
     );
   }
 }
